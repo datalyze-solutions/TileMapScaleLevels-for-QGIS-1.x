@@ -1,6 +1,6 @@
 <GDAL_WMS>
     <Service name="TMS">
-        <ServerUrl>http://tile.openstreetmap.org/${z}/${x}/${y}.png</ServerUrl>
+            <ServerUrl>http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png</ServerUrl>
     </Service>
     <DataWindow>
         <UpperLeftX>-20037508.34</UpperLeftX>
@@ -17,4 +17,4 @@
     <BlockSizeY>256</BlockSizeY>
     <BandsCount>3</BandsCount>
     <Cache />
-</GDAL_WMS> 
+</GDAL_WMS>  

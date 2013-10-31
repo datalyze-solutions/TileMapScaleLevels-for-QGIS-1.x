@@ -3,7 +3,7 @@
 /***************************************************************************
  TileMapScaleLevels
                                  A QGIS plugin
- Set the scale to the next matching Tile Map Scale. Works best with Google Mercator Projection.
+ Set the scale to the next matching Tile Map Scale.
                              -------------------
         begin                : 2013-01-23
         copyright            : (C) 2013 by Matthias Ludwig - Datalyze Solutions
@@ -21,17 +21,14 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-
 def name():
     return "Tile Map Scale Plugin"
 
-
 def description():
-    return "Sets the scale to the next matching Tile Map scale. Works best with Google Mercator Projection."
-
+    return "Sets the scale to the next matching Tile Map scale."
 
 def version():
-    return "Version 0.3"
+    return "Version 0.4"
 
 def icon():
     return "icon.png"
