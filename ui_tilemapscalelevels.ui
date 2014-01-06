@@ -127,23 +127,45 @@
       <property name="title">
        <string>Zoomlevel</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QSlider" name="sliderZoomlevels">
-         <property name="maximum">
-          <number>25</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="spinBoxZoomlevels">
-         <property name="maximum">
-          <number>25</number>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QSlider" name="sliderZoomlevels">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="statusTip">
+            <string/>
+           </property>
+           <property name="maximum">
+            <number>25</number>
+           </property>
+           <property name="sliderPosition">
+            <number>0</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::NoTicks</enum>
+           </property>
+           <property name="tickInterval">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBoxZoomlevels">
+           <property name="keyboardTracking">
+            <bool>false</bool>
+           </property>
+           <property name="maximum">
+            <number>25</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -173,8 +195,8 @@
            </property>
            <property name="iconSize">
             <size>
-             <width>32</width>
-             <height>32</height>
+             <width>22</width>
+             <height>22</height>
             </size>
            </property>
           </widget>
@@ -239,38 +261,5 @@
  <resources>
   <include location="resources.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>sliderZoomlevels</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>spinBoxZoomlevels</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>153</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>153</x>
-     <y>115</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinBoxZoomlevels</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>sliderZoomlevels</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>153</x>
-     <y>115</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>153</x>
-     <y>90</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_tilemapscalelevels.ui'
 #
-# Created: Thu Oct 31 12:31:54 2013
+# Created: Mon Jan  6 15:47:04 2014
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -56,17 +56,26 @@ class Ui_DockWidgetTileMapScaleLevels(object):
         self.verticalLayout_2.addWidget(self.checkBoxUseOnTheFlyTransformation)
         self.groupBox = QtGui.QGroupBox(self.dockWidgetContents)
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.groupBox)
+        self.verticalLayout_4 = QtGui.QVBoxLayout(self.groupBox)
+        self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
+        self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.sliderZoomlevels = QtGui.QSlider(self.groupBox)
+        self.sliderZoomlevels.setToolTip(_fromUtf8(""))
+        self.sliderZoomlevels.setStatusTip(_fromUtf8(""))
         self.sliderZoomlevels.setMaximum(25)
+        self.sliderZoomlevels.setSliderPosition(0)
         self.sliderZoomlevels.setOrientation(QtCore.Qt.Horizontal)
+        self.sliderZoomlevels.setTickPosition(QtGui.QSlider.NoTicks)
+        self.sliderZoomlevels.setTickInterval(0)
         self.sliderZoomlevels.setObjectName(_fromUtf8("sliderZoomlevels"))
         self.verticalLayout.addWidget(self.sliderZoomlevels)
         self.spinBoxZoomlevels = QtGui.QSpinBox(self.groupBox)
+        self.spinBoxZoomlevels.setKeyboardTracking(False)
         self.spinBoxZoomlevels.setMaximum(25)
         self.spinBoxZoomlevels.setObjectName(_fromUtf8("spinBoxZoomlevels"))
         self.verticalLayout.addWidget(self.spinBoxZoomlevels)
+        self.verticalLayout_4.addLayout(self.verticalLayout)
         self.verticalLayout_2.addWidget(self.groupBox)
         self.groupBoxDatasets = QtGui.QGroupBox(self.dockWidgetContents)
         self.groupBoxDatasets.setObjectName(_fromUtf8("groupBoxDatasets"))
@@ -78,7 +87,7 @@ class Ui_DockWidgetTileMapScaleLevels(object):
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/icons/osm.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonLoadOSM.setIcon(icon1)
-        self.buttonLoadOSM.setIconSize(QtCore.QSize(32, 32))
+        self.buttonLoadOSM.setIconSize(QtCore.QSize(22, 22))
         self.buttonLoadOSM.setObjectName(_fromUtf8("buttonLoadOSM"))
         self.horizontalLayout_2.addWidget(self.buttonLoadOSM)
         self.comboBoxUserDatasets = QtGui.QComboBox(self.groupBoxDatasets)
@@ -103,8 +112,6 @@ class Ui_DockWidgetTileMapScaleLevels(object):
         DockWidgetTileMapScaleLevels.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(DockWidgetTileMapScaleLevels)
-        QtCore.QObject.connect(self.sliderZoomlevels, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.spinBoxZoomlevels.setValue)
-        QtCore.QObject.connect(self.spinBoxZoomlevels, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.sliderZoomlevels.setValue)
         QtCore.QMetaObject.connectSlotsByName(DockWidgetTileMapScaleLevels)
 
     def retranslateUi(self, DockWidgetTileMapScaleLevels):

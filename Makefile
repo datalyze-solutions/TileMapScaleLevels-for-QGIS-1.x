@@ -35,7 +35,7 @@ PY_FILES = tilemapscalelevels.py tilemapscalelevelsdialog.py __init__.py
 
 EXTRAS = icon.png 
 
-UI_FILES = ui_tilemapscalelevels.py
+UI_FILES = ui_tilemapscalelevels.py ui_info.py
 
 RESOURCE_FILES = resources_rc.py
 

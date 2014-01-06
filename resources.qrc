@@ -8,5 +8,6 @@
     <file>icons/google_earth.png</file>
     <file>icons/osm.png</file>
     <file>icons/googlemaps.png</file>
+    <file>icons/go-home.png</file>
   </qresource>
 </RCC>

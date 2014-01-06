@@ -31,6 +31,8 @@ import math
 # Initialize Qt resources from file resources.py
 import resources_rc
 
+from ui_info import Ui_info
+
 class TileMapScaleLevelPlugin():
 
     def __init__(self, iface):
@@ -60,69 +62,68 @@ class TileMapScaleLevelPlugin():
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.action = QAction(
-            QIcon(":/icons/icon.png"),
-            u"Tile Map Scale Plugin", self.iface.mainWindow())
+        self.action = QAction(QIcon(":/icons/icon.png"), u"Tile Map Scale Plugin", self.iface.mainWindow())
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
         self.iface.addPluginToMenu(u"&Tile Map Scale Plugin", self.action)
-        #QObject.connect(self.action, SIGNAL("triggered()"), self.showDock)
         self.action.triggered.connect(self.showDock)
-                	
-	self.dock = uic.loadUi(os.path.join(self.workingDir, "ui_tilemapscalelevels.ui"))
-	
-	self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dock)
 
-	self.projection = self.canvas.mapRenderer().destinationCrs()
+        self.dock = uic.loadUi(os.path.join(self.workingDir, "ui_tilemapscalelevels.ui"))
 
-	self.canvas.enableAntiAliasing(True)
-               
-	self.readStatus()
+        self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dock)
+
+        self.projection = self.canvas.mapRenderer().destinationCrs()
+
+        self.canvas.enableAntiAliasing(True)
+
+        self.readStatus()
+        ## use old style connect. new style will fail cause of a bug.
         QObject.connect(self.canvas, SIGNAL("scaleChanged(double)"), self.scaleChanged)
         #self.canvas.scaleChanged.connect(self.scaleChanged)
-
-	self.dock.sliderZoomlevels.sliderReleased.connect(self.sliderReleased)
-        self.dock.spinBoxZoomlevels.editingFinished.connect(self.editingFinished)
+        
+        self.dock.spinBoxZoomlevels.setKeyboardTracking(False)
+        self.dock.sliderZoomlevels.sliderReleased.connect(self.sliderReleased)
+        self.dock.spinBoxZoomlevels.valueChanged.connect(self.valueChanged)
+        
         self.dock.checkBoxIsActive.stateChanged.connect(self.activationStateChanged)
         self.dock.checkBoxUseMercator.stateChanged.connect(self.useMercator)
         self.dock.checkBoxUseOnTheFlyTransformation.stateChanged.connect(self.useOnTheFlyTransformation)
+
+        self.dock.buttonInfo.clicked.connect(self.showInfo)
         
         self.dock.buttonLoadOSM.clicked.connect(self.loadOSM)
-        
         self.dock.buttonLoadUserDataset.clicked.connect(self.loadSelectedUserDataset)
         self.dock.buttonLoadRefreshUserDatasets.clicked.connect(self.initUserDatasets)
         
-	self.scaleCalculator = TileMapScaleLevels()
+        self.scaleCalculator = TileMapScaleLevels()
 
-	self.initUserDatasets()
-	
+        self.initUserDatasets()
+
     def showDock(self):
-	if self.dock.isVisible():
-	  self.dock.hide()
-	else:
-	  self.dock.show()
+        if self.dock.isVisible():
+            self.dock.hide()
+        else:
+            self.dock.show()
     
     def unload(self):
         # Remove the plugin menu item and icon
         self.iface.removePluginMenu(u"&Tile Map Scale Plugin", self.action)
         self.iface.removeToolBarIcon(self.action)
 
+    def showInfo(self):
+        self.dialogInfo = dialogInfo(self.workingDir)
+        self.dialogInfo.setParent(self.iface.mainWindow(), self.dialogInfo.windowFlags())
+        self.dialogInfo.exec_()
+        
     def sliderReleased(self):
-	zoomlevel = self.dock.sliderZoomlevels.value()
-	scale = self.scaleCalculator.getScale(zoomlevel)
-	self.scaleChanged(scale)
+        print self.dock.sliderZoomlevels.value()
+        self.dock.spinBoxZoomlevels.setValue(self.dock.sliderZoomlevels.value())
 
-    def editingFinished(self):
-	zoomlevel = self.dock.spinBoxZoomlevels.value()
-	scale = self.scaleCalculator.getScale(zoomlevel)
-	self.scaleChanged(scale)
-	
-    def setScaleWithSlider(self):
-	pass
-      
-    def setScaleWithSpinBox(self):
-	pass
+    def valueChanged(self):        
+        zoomlevel = self.dock.spinBoxZoomlevels.value()
+        scale = self.scaleCalculator.getScale(zoomlevel)
+        self.scaleChanged(scale)
       
     def loadOSM(self):
         datasetPath = os.path.join(self.datasetDir, "osm_mapnik.xml")
@@ -139,7 +140,7 @@ class TileMapScaleLevelPlugin():
             self.dock.comboBoxUserDatasets.addItem(filename)
 
     def loadSelectedUserDataset(self):
-        selectedDataset = self.dock.comboBoxUserDatasets.currentText()
+        selectedDataset = str(self.dock.comboBoxUserDatasets.currentText())
         datasetPath = os.path.join(self.datasetDir, selectedDataset)
         errorMessage = "Unable to load file %s" % datasetPath
         if (selectedDataset == ""):            
@@ -149,21 +150,20 @@ class TileMapScaleLevelPlugin():
         else:
             self.iface.messageBar().pushMessage("Error", errorMessage, QgsMessageBar.CRITICAL)
         
-        
     def scaleChanged(self, scale):
-	if self.dock.checkBoxIsActive.isChecked():
-            #print scale
-	    ## Disconnect to prevent infinite scaling loop
-	    QObject.disconnect(self.canvas, SIGNAL("scaleChanged(double)"), self.scaleChanged)
-	    ##self.canvas.scaleChanged.disconnect(self.scaleChanged)
-	    
-	    zoomlevel = self.scaleCalculator.getZoomlevel(scale)
-	    if zoomlevel <> None:
-		newScale = self.scaleCalculator.getScale(zoomlevel)
-		self.canvas.zoomScale(newScale)
-		self.dock.sliderZoomlevels.setValue(zoomlevel)
-	    QObject.connect(self.canvas, SIGNAL("scaleChanged(double)"), self.scaleChanged)
-	    ##self.canvas.scaleChanged.connect(self.scaleChanged)
+        if self.dock.checkBoxIsActive.isChecked():
+            ## Disconnect to prevent infinite scaling loop
+            QObject.disconnect(self.canvas, SIGNAL("scaleChanged(double)"), self.scaleChanged)
+            self.dock.spinBoxZoomlevels.valueChanged.disconnect(self.valueChanged)
+
+            zoomlevel = self.scaleCalculator.getZoomlevel(scale)
+            if zoomlevel <> None:
+                newScale = self.scaleCalculator.getScale(zoomlevel)
+                self.canvas.zoomScale(newScale)
+                self.dock.sliderZoomlevels.setValue(zoomlevel)
+                self.dock.spinBoxZoomlevels.setValue(zoomlevel)
+            QObject.connect(self.canvas, SIGNAL("scaleChanged(double)"), self.scaleChanged)
+            self.dock.spinBoxZoomlevels.valueChanged.connect(self.valueChanged)
 
     def activationStateChanged(self):
         if self.dock.checkBoxIsActive.isChecked():
@@ -198,22 +198,35 @@ class TileMapScaleLevelPlugin():
         s = QSettings()
         isActive = s.value("tilemapscalelevels/active", True, type=bool)
         self.dock.checkBoxIsActive.setChecked(isActive)
-	    
-
+        
 class TileMapScaleLevels:
-    #import math
     def __init__(self, dpi = 96):
         self.dpi = dpi
         self.inchesPerMeter = 39.37
         self.maxScalePerPixel = 156543.04
 
     def getScale(self, zoomlevel):
-	if zoomlevel < 0:
-	    return (self.dpi * self.inchesPerMeter * self.maxScalePerPixel) / (math.pow(2, 0))
-	else:
-	    zoomlevel = int(zoomlevel)
-	    return (self.dpi * self.inchesPerMeter * self.maxScalePerPixel) / (math.pow(2, zoomlevel))
-	    
+        if zoomlevel < 0:
+            return (self.dpi * self.inchesPerMeter * self.maxScalePerPixel) / (math.pow(2, 0))
+        else:
+            zoomlevel = int(zoomlevel)
+            return (self.dpi * self.inchesPerMeter * self.maxScalePerPixel) / (math.pow(2, zoomlevel))
+
     def getZoomlevel(self, scale):
-	if scale <> 0:
-	    return int(round(math.log( ((self.dpi * self.inchesPerMeter * self.maxScalePerPixel) / scale), 2 ), 0))
+        if scale <> 0:
+            return int(round(math.log( ((self.dpi * self.inchesPerMeter * self.maxScalePerPixel) / scale), 2 ), 0))
+
+class dialogInfo(QDialog, Ui_info):
+
+    def __init__(self, workingDir, infoHtml="info.html"):
+        super(dialogInfo, self).__init__()
+        self.setupUi(self)
+
+        self.workingDir = workingDir
+        self.infoHtml = infoHtml
+        self.goHome()
+        self.buttonHome.clicked.connect(self.goHome)
+
+    def goHome(self):
+        url = os.path.join(self.workingDir, self.infoHtml)
+        self.webView.setUrl(QUrl(url))
